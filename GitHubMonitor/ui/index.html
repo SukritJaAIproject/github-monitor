@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="th" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>GitHub Monitor</title>
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<!-- ไอคอนเส้นทั้งหมดของหน้า (วาดเอง ไม่โหลดจากภายนอก) -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4.8h-4.8"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9.5M17.5 7H20M4 17h3.5M11.5 17H20"/><circle cx="15.5" cy="7" r="2"/><circle cx="9.5" cy="17" r="2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.3 3.8-5 7-5s5.8 1.7 7 5"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.75"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 19.5h14"/></symbol>
+    <symbol id="i-clone" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5v-2a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.8 14.29 9.44 20.37 9.88 15.71 13.81 17.17 19.72 12 16.5 6.83 19.72 8.29 13.81 3.63 9.88 9.71 9.44Z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.7v.2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4.2 21 19.5H3z"/><path d="M12 10.2v4.3M12 17.2v.2"/></symbol>
+    <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9.2 9.2 5.6 5.6M14.8 9.2l-5.6 5.6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.2 12.3 2.6 2.6 5-5.4"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8"/><path d="M18 14v4a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 5 18V8a1.5 1.5 0 0 1 1.5-1.5H10"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15.5" r="4"/><path d="m11 12.5 8.5-8.5M16 7.5l2.5 2.5M13.8 9.7l2 2"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8z"/><path d="M14 3.5V8h4.5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 9.5 5 5 5-5"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 18.5v-13M6.5 11 12 5.5 17.5 11"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5.5v13M6.5 13 12 18.5 17.5 13"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V5.2a1.5 1.5 0 0 1 1.5-1.5h2a1.5 1.5 0 0 1 1.5 1.5V7M6.5 7l1 12a1.5 1.5 0 0 0 1.5 1.4h6a1.5 1.5 0 0 0 1.5-1.4l1-12"/></symbol>
+    <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3.5v8"/><path d="M7 6.5a7.5 7.5 0 1 0 10 0"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="11.5" rx="2"/><path d="M9 20h6M12 16v4"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <img class="logo" src="icon.png" alt="">
+      <div class="brand-text">
+        <h1>GitHub Monitor</h1>
+        <p class="meta">
+          <span class="meta-item"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><span id="sub-account">—</span></span>
+          <span class="meta-item"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><span id="sub-updated">—</span></span>
+        </p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="ส่วนต่าง ๆ ของหน้า" data-i18n-attr="aria-label:nav_label" hidden>
+      <a href="#overview" data-i18n="nav_overview">ภาพรวม</a>
+      <a href="#daily" data-i18n="nav_daily">รายวัน</a>
+      <a href="#downloads" data-i18n="nav_downloads">ดาวน์โหลด</a>
+      <a href="#by-repo" data-i18n="nav_repos">Repo</a>
+      <a href="#sources" data-i18n="nav_sources">ที่มา</a>
+    </nav>
+    <div class="actions">
+      <div class="seg lang" role="group" aria-label="ภาษา" data-i18n-attr="aria-label:lang_label">
+        <button type="button" class="lang-btn" data-lang="th" lang="th" aria-pressed="true">ไทย</button>
+        <button type="button" class="lang-btn" data-lang="en" lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button type="button" class="btn primary" id="btn-refresh" hidden>
+        <svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span id="btn-refresh-text">อัปเดตตอนนี้</span>
+      </button>
+      <button type="button" class="btn icon" id="btn-settings" title="ตั้งค่า" aria-label="ตั้งค่า" data-i18n-attr="title:settings;aria-label:settings">
+        <svg class="ic" aria-hidden="true"><use href="#i-sliders"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="alert" id="banner" role="status" hidden>
+    <svg class="ic alert-icon" aria-hidden="true"><use id="banner-icon" href="#i-info"/></svg>
+    <div class="alert-body">
+      <span id="banner-text"></span>
+      <div class="progress" id="banner-progress" hidden><div class="progress-bar" id="banner-bar"></div></div>
+    </div>
+    <button type="button" class="btn small" id="banner-action" hidden></button>
+  </div>
+
+  <div class="alert info" id="install-note" hidden>
+    <svg class="ic alert-icon" aria-hidden="true"><use href="#i-monitor"/></svg>
+    <div class="alert-body" data-i18n="install_note">ยังไม่ได้ติดตั้งลงเครื่อง ติดตั้งเพื่อให้มีไอคอน GitHub Monitor บน Desktop และใน Start Menu</div>
+    <button type="button" class="btn small primary" id="btn-install-top" data-i18n="install_short">ติดตั้ง</button>
+  </div>
+
+  <section class="setup" id="setup" hidden>
+    <div class="setup-main">
+      <span class="setup-icon"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg></span>
+      <h2 data-i18n="setup_title">เชื่อมกับบัญชี GitHub</h2>
+      <p class="setup-intro" data-i18n-html="setup_intro">ยอดเข้าชมและยอด clone ของ repo เปิดให้ดูเฉพาะเจ้าของ โปรแกรมจึงต้องใช้ <b>token แบบอ่านอย่างเดียว</b> ของบัญชี GitHub ของคุณ ทำครั้งเดียวต่อเครื่อง</p>
+      <ol class="steps">
+        <li><span data-i18n-html="setup_step1"></span></li>
+        <li><span data-i18n-html="setup_step2"></span></li>
+        <li><span data-i18n-html="setup_step3"></span></li>
+        <li><span data-i18n-html="setup_step4"></span></li>
+        <li><span data-i18n-html="setup_step5"></span></li>
+      </ol>
+    </div>
+    <div class="token-panel">
+      <button type="button" class="btn" id="btn-open-token">
+        <svg class="ic" aria-hidden="true"><use href="#i-external"/></svg><span data-i18n="open_token_page">เปิดหน้าสร้าง token</span>
+      </button>
+      <label class="field-label" for="token-input" data-i18n="token_label">GitHub token</label>
+      <input type="password" id="token-input" class="input" placeholder="วาง token ที่นี่" data-i18n-attr="placeholder:token_placeholder" autocomplete="off" spellcheck="false">
+      <p class="error" id="token-error" role="alert" hidden></p>
+      <div class="row">
+        <button type="button" class="btn primary" id="btn-save-token" data-i18n="save_token">บันทึกและเริ่มดึงข้อมูล</button>
+        <button type="button" class="btn" id="btn-cancel-token" data-i18n="cancel" hidden>ยกเลิก</button>
+      </div>
+      <p class="note with-icon"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span data-i18n="token_note">token ถูกเข้ารหัสด้วยบัญชี Windows ของคุณและเก็บไว้ในเครื่องนี้เท่านั้น</span></p>
+    </div>
+  </section>
+
+  <main id="dash" hidden>
+    <section class="overview" id="overview" aria-label="ภาพรวม" data-i18n-attr="aria-label:overview_label">
+      <div class="hero">
+        <div class="hero-main">
+          <p class="hero-label" data-i18n="hero_label">ยอดเข้าชม 14 วันล่าสุด</p>
+          <div class="hero-figure">
+            <span class="hero-num" id="k-views">—</span>
+            <span class="delta" id="k-trend" hidden><svg class="ic" aria-hidden="true"><use id="k-trend-icon" href="#i-up"/></svg><span id="k-trend-value"></span><span class="delta-vs" data-i18n="trend_vs">เทียบ 7 วันก่อนหน้า</span></span>
+          </div>
+          <p class="hero-sub"><span id="k-visitors-line"></span> <span class="hero-own" id="k-own" data-i18n="hero_own">นับรวมตอนที่คุณเปิดดูเองด้วย</span></p>
+          <div class="strip" id="hero-strip"></div>
+        </div>
+        <div class="hero-side">
+          <h2 class="hero-side-title" data-i18n="top_repos_title">repo ที่มีคนเข้าชมมากที่สุด</h2>
+          <ol class="toplist" id="top-repos"></ol>
+          <p class="hero-empty" id="top-empty" data-i18n="top_empty" hidden></p>
+        </div>
+      </div>
+
+      <div class="tiles">
+        <article class="tile">
+          <header class="tile-head">
+            <svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>
+            <h3 data-i18n="kpi_install_label">ดาวน์โหลดตัวติดตั้ง</h3>
+            <span class="period" data-i18n="period_all">ทั้งหมด</span>
+          </header>
+          <div class="tile-value" id="k-install">—</div>
+          <p class="tile-sub" id="k-all-line"></p>
+          <div class="spark" id="spark-install"></div>
+        </article>
+        <article class="tile">
+          <header class="tile-head">
+            <svg class="ic" aria-hidden="true"><use href="#i-clone"/></svg>
+            <h3 data-i18n="kpi_clones_label">Clone</h3>
+            <span class="period" data-i18n="period_14">14 วัน</span>
+          </header>
+          <div class="tile-value" id="k-clones">—</div>
+          <p class="tile-sub"><span id="k-cloners-line"></span><span class="tile-hint" data-i18n="kpi_cloners_note">ส่วนมากมักเป็นบอตและระบบอัตโนมัติ</span></p>
+          <div class="spark" id="spark-clones"></div>
+        </article>
+        <article class="tile">
+          <header class="tile-head">
+            <svg class="ic" aria-hidden="true"><use href="#i-star"/></svg>
+            <h3 data-i18n="kpi_stars_label">Stars</h3>
+            <span class="period" data-i18n="period_repos">ทุก repo</span>
+          </header>
+          <div class="tile-value" id="k-stars">—</div>
+          <dl class="facts">
+            <div><dt data-i18n="kpi_forks">Forks</dt><dd id="k-forks">—</dd></div>
+            <div><dt data-i18n="kpi_repos">Repo</dt><dd id="k-repos">—</dd></div>
+          </dl>
+          <div class="spark" id="spark-stars"></div>
+        </article>
+      </div>
+    </section>
+
+    <div class="filterbar" id="filterbar" role="group" aria-label="ตัวกรอง" data-i18n-attr="aria-label:filters_label">
+      <label class="field">
+        <span class="field-label" data-i18n="filter_repo">แสดงข้อมูลของ</span>
+        <span class="select-wrap">
+          <select id="repo-select" class="select"></select>
+          <svg class="ic" aria-hidden="true"><use href="#i-chevron"/></svg>
+        </span>
+      </label>
+      <div class="field">
+        <span class="field-label" id="range-label" data-i18n="range_label">ช่วงเวลา</span>
+        <div class="seg" id="range" role="group" aria-labelledby="range-label">
+          <button type="button" data-range="14" data-i18n="range_14">14 วัน</button>
+          <button type="button" data-range="30" data-i18n="range_30">30 วัน</button>
+          <button type="button" data-range="90" data-i18n="range_90">90 วัน</button>
+          <button type="button" data-range="all" data-i18n="range_all">ทั้งหมด</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="section" id="daily">
+      <div class="section-head">
+        <h2 data-i18n="daily_title">รายวัน</h2>
+        <p class="note" data-i18n="daily_note"></p>
+      </div>
+      <div class="grid">
+        <figure class="card chart-card">
+          <div class="card-head">
+            <h3 data-i18n="views_chart_title">ยอดเข้าชมต่อวัน</h3>
+            <div class="seg small view-toggle" role="group" data-chart="views" aria-label="แสดงเป็น" data-i18n-attr="aria-label:view_label">
+              <button type="button" data-view="chart" data-i18n="view_chart">กราฟ</button>
+              <button type="button" data-view="table" data-i18n="view_table">ตาราง</button>
+            </div>
+          </div>
+          <div class="legend"><span><i class="key bar s1"></i><span data-i18n="legend_views">ครั้งที่เข้าชม</span></span><span><i class="key line s2"></i><span data-i18n="legend_visitors">ผู้เข้าชมไม่ซ้ำ</span></span></div>
+          <div class="chart" id="chart-views"></div>
+        </figure>
+        <figure class="card chart-card">
+          <div class="card-head">
+            <h3 data-i18n="clones_chart_title">Clone ต่อวัน</h3>
+            <div class="seg small view-toggle" role="group" data-chart="clones" aria-label="แสดงเป็น" data-i18n-attr="aria-label:view_label">
+              <button type="button" data-view="chart" data-i18n="view_chart">กราฟ</button>
+              <button type="button" data-view="table" data-i18n="view_table">ตาราง</button>
+            </div>
+          </div>
+          <div class="legend"><span><i class="key bar s1"></i><span data-i18n="legend_clones">ครั้งที่ clone</span></span><span><i class="key line s2"></i><span data-i18n="legend_cloners">ผู้ clone ไม่ซ้ำ</span></span></div>
+          <div class="chart" id="chart-clones"></div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="downloads">
+      <div class="section-head">
+        <h2 data-i18n="downloads_title">ยอดดาวน์โหลด</h2>
+        <p class="note" data-i18n="downloads_note"></p>
+      </div>
+      <div class="grid top">
+        <figure class="card chart-card">
+          <div class="card-head">
+            <h3 data-i18n="by_release_title">แยกตาม release</h3>
+            <div class="seg small view-toggle" role="group" data-chart="releases" aria-label="แสดงเป็น" data-i18n-attr="aria-label:view_label">
+              <button type="button" data-view="chart" data-i18n="view_chart">กราฟ</button>
+              <button type="button" data-view="table" data-i18n="view_table">ตาราง</button>
+            </div>
+          </div>
+          <div class="legend"><span><i class="key bar s1"></i><span data-i18n="legend_installer">ตัวติดตั้ง</span></span><span><i class="key bar s2"></i><span data-i18n="legend_package">แพ็กเกจ (.7z/.zip)</span></span><span><i class="key bar so"></i><span data-i18n="legend_other">ไฟล์ประกอบ</span></span></div>
+          <div class="chart" id="chart-releases"></div>
+          <button type="button" class="btn small more" id="btn-more-releases" hidden></button>
+        </figure>
+        <figure class="card chart-card">
+          <div class="card-head">
+            <h3 data-i18n="cumulative_title">ยอดดาวน์โหลดสะสมตามวันที่เก็บข้อมูล</h3>
+            <div class="seg small view-toggle" role="group" data-chart="cumulative" aria-label="แสดงเป็น" data-i18n-attr="aria-label:view_label">
+              <button type="button" data-view="chart" data-i18n="view_chart">กราฟ</button>
+              <button type="button" data-view="table" data-i18n="view_table">ตาราง</button>
+            </div>
+          </div>
+          <div class="legend"><span><i class="key line s1"></i><span data-i18n="legend_installer">ตัวติดตั้ง</span></span><span><i class="key line so"></i><span data-i18n="legend_all_files">ไฟล์ทุกชนิด</span></span></div>
+          <p class="note" id="dl-few" data-i18n="dl_few" hidden></p>
+          <div class="chart" id="chart-cumulative"></div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="by-repo">
+      <div class="section-head with-tools">
+        <div>
+          <h2 data-i18n="by_repo_title">แยกตาม repo</h2>
+          <p class="note" data-i18n="by_repo_note"></p>
+        </div>
+        <div class="search">
+          <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" id="repo-search" class="input" placeholder="ค้นหา repo" aria-label="ค้นหา repo" data-i18n-attr="placeholder:search_placeholder;aria-label:search_placeholder">
+        </div>
+      </div>
+      <div class="card table-card">
+        <div class="table-box">
+          <table class="table repo-table" id="repo-table">
+            <thead><tr>
+              <th data-key="repo" class="left"><button type="button" data-i18n="th_repo">Repo</button></th>
+              <th data-key="views_14d"><button type="button" data-i18n="th_views">เข้าชม</button></th>
+              <th data-key="visitors_14d" aria-sort="descending"><button type="button" data-i18n="th_visitors">ผู้เข้าชมไม่ซ้ำ</button></th>
+              <th data-key="clones_14d" class="opt"><button type="button" data-i18n="th_clones">Clone</button></th>
+              <th data-key="cloners_14d" class="opt"><button type="button" data-i18n="th_cloners">ผู้ clone ไม่ซ้ำ</button></th>
+              <th data-key="downloads_installer"><button type="button" data-i18n="th_downloads">ดาวน์โหลด</button></th>
+              <th data-key="stars"><button type="button" data-i18n="th_stars">Stars</button></th>
+              <th data-key="forks" class="opt"><button type="button" data-i18n="th_forks">Forks</button></th>
+              <th data-key="pushed" class="opt"><button type="button" data-i18n="th_pushed">Push ล่าสุด</button></th>
+            </tr></thead>
+            <tbody id="repo-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sources">
+      <div class="section-head">
+        <h2 data-i18n="sources_title">คนเข้ามาจากไหน และเปิดดูอะไร</h2>
+        <p class="note" data-i18n="sources_note"></p>
+      </div>
+      <div class="grid top">
+        <div class="card table-card">
+          <h3 class="card-title"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><span data-i18n="referrers_title">เว็บที่ส่งคนเข้ามา</span></h3>
+          <p class="empty" id="ref-empty" data-i18n="ref_empty" hidden></p>
+          <div class="table-box short">
+            <table class="table list-table">
+              <thead><tr><th class="left" data-i18n="th_source">ที่มา</th><th data-i18n="th_views_short">เข้าชม</th><th data-i18n="th_unique_short">ไม่ซ้ำ</th></tr></thead>
+              <tbody id="ref-rows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card table-card">
+          <h3 class="card-title"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span data-i18n="paths_title">หน้าที่ถูกเปิดมากที่สุด</span></h3>
+          <p class="empty" id="path-empty" data-i18n="path_empty" hidden></p>
+          <div class="table-box short">
+            <table class="table list-table">
+              <thead><tr><th class="left" data-i18n="th_page">หน้า</th><th data-i18n="th_views_short">เข้าชม</th><th data-i18n="th_unique_short">ไม่ซ้ำ</th></tr></thead>
+              <tbody id="path-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <details class="notes">
+      <summary><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span data-i18n="notes_summary">ตัวเลขแต่ละตัวหมายถึงอะไร</span><svg class="ic chev" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+      <dl>
+        <div><dt data-i18n="note_views_t">ยอดเข้าชม</dt><dd data-i18n="note_views_d"></dd></div>
+        <div><dt data-i18n="note_visitors_t">ผู้เข้าชมไม่ซ้ำ</dt><dd data-i18n="note_visitors_d"></dd></div>
+        <div><dt data-i18n="note_clones_t">Clone</dt><dd data-i18n="note_clones_d"></dd></div>
+        <div><dt data-i18n="note_downloads_t">ดาวน์โหลด</dt><dd data-i18n="note_downloads_d"></dd></div>
+        <div><dt data-i18n="note_period_t">ช่วงเวลา</dt><dd data-i18n="note_period_d"></dd></div>
+        <div><dt data-i18n="note_excluded_t">ที่ไม่ได้รวม</dt><dd data-i18n="note_excluded_d"></dd></div>
+      </dl>
+    </details>
+  </main>
+
+  <section class="offline" id="offline" hidden>
+    <span class="offline-icon"><svg class="ic" aria-hidden="true"><use href="#i-power"/></svg></span>
+    <h2 id="offline-title">โปรแกรมปิดอยู่</h2>
+    <p id="offline-text">แท็บนี้เชื่อมกับโปรแกรมไม่ได้แล้ว ปิดแท็บนี้แล้วเปิด GitHub Monitor ใหม่จากไอคอนบน Desktop</p>
+  </section>
+</div>
+
+<dialog class="modal" id="settings" aria-labelledby="settings-title">
+  <div class="modal-head">
+    <h2 id="settings-title" data-i18n="settings">ตั้งค่า</h2>
+    <button type="button" class="btn icon ghost" data-close title="ปิด" aria-label="ปิด" data-i18n-attr="title:close;aria-label:close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="modal-body">
+    <div class="setting">
+      <div class="setting-label" data-i18n="account_label">บัญชี GitHub</div>
+      <div class="account">
+        <span class="avatar" id="set-avatar" aria-hidden="true">?</span>
+        <span class="setting-value" id="set-account">—</span>
+      </div>
+      <div class="row">
+        <button type="button" class="btn small" id="btn-change-token"><svg class="ic" aria-hidden="true"><use href="#i-key"/></svg><span data-i18n="change_token">เปลี่ยน token</span></button>
+        <button type="button" class="btn small danger" id="btn-remove-token" data-i18n="remove_token">ลบ token ออกจากเครื่องนี้</button>
+      </div>
+    </div>
+    <div class="setting">
+      <label class="switch">
+        <input type="checkbox" id="set-private" role="switch">
+        <span data-i18n="show_private">แสดง repo ส่วนตัวด้วย</span>
+      </label>
+      <p class="note" data-i18n="show_private_note"></p>
+    </div>
+    <div class="setting">
+      <div class="setting-label" data-i18n="schedule_label">เก็บข้อมูลอัตโนมัติทุกวัน</div>
+      <div class="setting-value" id="set-schedule">—</div>
+      <div class="row"><button type="button" class="btn small" id="btn-schedule" hidden></button></div>
+      <p class="note" data-i18n="schedule_note"></p>
+    </div>
+    <div class="setting">
+      <div class="setting-label" data-i18n="install_label">การติดตั้ง</div>
+      <div class="setting-value path" id="set-install">—</div>
+      <div class="row">
+        <button type="button" class="btn small" id="btn-install" hidden></button>
+        <button type="button" class="btn small danger" id="btn-uninstall" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg><span data-i18n="uninstall_btn">ถอนการติดตั้ง</span></button>
+      </div>
+    </div>
+    <div class="setting">
+      <div class="setting-label" data-i18n="data_label">ข้อมูลในเครื่องนี้</div>
+      <div class="setting-value path" id="set-datadir">—</div>
+      <div class="row"><button type="button" class="btn small" id="btn-open-data"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="open_data">เปิดโฟลเดอร์ข้อมูล</span></button></div>
+      <p class="note" data-i18n="data_note"></p>
+    </div>
+  </div>
+  <div class="modal-foot">
+    <span class="note" id="set-version">—</span>
+    <button type="button" class="btn primary" data-close data-i18n="close">ปิด</button>
+  </div>
+</dialog>
+
+<dialog class="modal narrow" id="confirm" aria-labelledby="confirm-title">
+  <div class="modal-body confirm-body">
+    <h2 id="confirm-title"></h2>
+    <p id="confirm-text"></p>
+    <label class="check" id="confirm-check-row" hidden>
+      <input type="checkbox" id="confirm-check">
+      <span><span id="confirm-check-label"></span><span class="note" id="confirm-check-note"></span></span>
+    </label>
+  </div>
+  <div class="modal-foot end">
+    <button type="button" class="btn" id="confirm-cancel" data-i18n="cancel">ยกเลิก</button>
+    <button type="button" class="btn danger-solid" id="confirm-ok"></button>
+  </div>
+</dialog>
+
+<div class="toasts" id="toasts" popover="manual" aria-live="polite"></div>
+<div class="tip" id="tip" hidden></div>
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

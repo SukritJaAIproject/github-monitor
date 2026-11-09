@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Windows batch files and the Thai README must keep CRLF line endings
+*.cmd text eol=crlf
+*.txt text eol=crlf
+*.png binary
+*.ico binary
